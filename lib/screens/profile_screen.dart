@@ -8,7 +8,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String userName = '';
+  String userName = 'Loading...';
   String userRole = '';
 
   @override
@@ -20,30 +20,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userName = prefs.getString('name') ?? 'User';
-      userRole = prefs.getString('role') ?? 'Role tidak diketahui';
+      userName = prefs.getString('name') ?? 'Teknisi Andalan';
+      userRole = prefs.getString('role') ?? 'teknisi';
     });
   }
 
-  Future<void> _logout() async {
-    // Tampilkan dialog konfirmasi
-    bool? confirm = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Keluar'),
-        content: Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text('Batal', style: TextStyle(color: Colors.grey))),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: Text('Keluar', style: TextStyle(color: Colors.red))),
-        ],
-      ),
+  void _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    
+    // Sesuaikan dengan route login lu ya
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Berhasil Logout!')),
     );
-
-    if (confirm == true) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear(); // Hapus token
-      Navigator.pushReplacementNamed(context, '/login');
-    }
+    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
   }
 
   @override
@@ -51,53 +41,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Profil Saya', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: Text('Profil', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 1,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.blue[600],
-                child: Text(
-                  userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+      body: ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          // HEADER PROFIL
+          Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.blue[700],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white,
+                  child: Icon(LucideIcons.user, size: 30, color: Colors.blue[700]),
                 ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userName, 
+                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)
+                      ),
+                      SizedBox(height: 4),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          userRole.toUpperCase(), 
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          
+          SizedBox(height: 32),
+
+          // MENU LOGOUT DOANG
+          Text("AKUN", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey[500])),
+          SizedBox(height: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
+            ),
+            child: ListTile(
+              leading: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(color: Colors.red[50], borderRadius: BorderRadius.circular(8)),
+                child: Icon(LucideIcons.logOut, color: Colors.red[700]),
               ),
+              title: Text("Logout", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[700])),
+              onTap: _logout,
             ),
-            SizedBox(height: 16),
-            Text(userName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.grey[800])),
-            SizedBox(height: 4),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(color: Colors.green[50], borderRadius: BorderRadius.circular(12)),
-              child: Text(userRole.toUpperCase(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green[600])),
-            ),
-            SizedBox(height: 40),
-            
-            // Tombol Logout
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                onPressed: _logout,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[50],
-                  foregroundColor: Colors.red[600],
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: Icon(LucideIcons.logOut, size: 20),
-                label: Text("KELUAR", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
