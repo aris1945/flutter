@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -26,14 +27,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _logout() async {
+    // 1. Bersihin semua memori (token, nama, role)
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     
-    // Sesuaikan dengan route login lu ya
+    // Pengecekan wajib biar linter nggak ngomel
+    if (!mounted) return; 
+
+    // 2. Kasih notif sukses
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Berhasil Logout!')),
+      const SnackBar(content: Text('Berhasil Logout!')),
     );
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+
+    // 3. Lempar ke Login & HANCURKAN riwayat halaman
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false, // Kunci maut: Bikin user nggak bisa pencet tombol "Back" di HP buat masuk lagi
+    );
   }
 
   @override

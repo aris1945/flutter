@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Pastikan import ini bener sesuai struktur folder lu
 import 'screens/login_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/site_list_screen.dart';
-import 'screens/profile_screen.dart';
+import 'screens/main_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-
-  runApp(MyApp(initialRoute: token != null && token.isNotEmpty ? '/dashboard' : '/login'));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String initialRoute;
-  MyApp({required this.initialRoute});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +23,32 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.interTextTheme(Theme.of(context).textTheme),
         primarySwatch: Colors.blue,
       ),
-      initialRoute: initialRoute,
-      routes: {
-        '/login': (context) => LoginScreen(),
-        '/dashboard': (context) => DashboardScreen(),
-      },
+      // INI KUNCINYA: Pakai parameter 'home' dan FutureBuilder
+      home: FutureBuilder<SharedPreferences>(
+        future: SharedPreferences.getInstance(),
+        builder: (context, snapshot) {
+          // 1. Selagi nunggu ngecek memori HP, tampilin loading muter di tengah
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          // 2. Baca memori tokennya
+          final prefs = snapshot.data;
+          final token = prefs?.getString('token');
+
+          // 3. Penentuan Jalur Suci
+          if (token != null && token.isNotEmpty) {
+            // Kalau token ada -> BUKA MAIN SCREEN (Biar Navbar ngikut!)
+            return MainScreen(); 
+          } else {
+            // Kalau token kosong -> BUKA LOGIN SCREEN
+            return const LoginScreen();
+          }
+        },
+      ),
     );
   }
 }

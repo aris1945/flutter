@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dashboard_screen.dart';
 import 'ticket_list_screen.dart';
-import 'site_list_screen.dart'; // <--- IMPORT HALAMAN SITE
+import 'site_menu_screen.dart'; // <--- IMPORT HALAMAN SITE
 import 'profile_screen.dart';
 import 'create_ticket_screen.dart';
 
@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     DashboardScreen(),   // Index 0
     TicketListScreen(),  // Index 1
-    SiteListScreen(),    // Index 2 <--- TAB BARU
+    SiteMenuScreen(),    // Index 2 <--- TAB BARU
     ProfileScreen(),     // Index 3 (Profil geser ke kanan)
   ];
 
