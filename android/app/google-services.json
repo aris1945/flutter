@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "163090057373",
+    "project_id": "wan-monitor",
+    "storage_bucket": "wan-monitor.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163090057373:android:4e6575952b9b582866ec74",
+        "android_client_info": {
+          "package_name": "com.aris.wanmonitor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMYPk0n-bVWZhVa1fqbq1BWPjVFe8E7ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
