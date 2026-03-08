@@ -207,15 +207,15 @@ class _UpdateWorklogScreenState extends State<UpdateWorklogScreen> {
             SizedBox(height: 16),
 
             // Segmentasi (ODP, ODC, FTM)
-            Row(
-              children: [
-                Expanded(child: _buildTextField("ODP", _odpController)),
-                SizedBox(width: 12),
-                Expanded(child: _buildTextField("ODC", _odcController)),
-                SizedBox(width: 12),
-                Expanded(child: _buildTextField("FTM", _ftmController)),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     Expanded(child: _buildTextField("ODP", _odpController)),
+            //     SizedBox(width: 12),
+            //     Expanded(child: _buildTextField("ODC", _odcController)),
+            //     SizedBox(width: 12),
+            //     Expanded(child: _buildTextField("FTM", _ftmController)),
+            //   ],
+            // ),
             SizedBox(height: 24),
 
             // Area Foto Evident

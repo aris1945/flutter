@@ -10,6 +10,9 @@ import 'login_screen.dart';
 
 
 class DashboardScreen extends StatefulWidget {
+  final Function(String)? onNavigateToTickets;
+  const DashboardScreen({Key? key, this.onNavigateToTickets}) : super(key: key);
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -261,22 +264,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.1,
                 children: [
-                  _buildStatCard('Total Tiket', stats['total'], [
-                    Colors.blue[600]!,
-                    Colors.blue[800]!,
-                  ], LucideIcons.ticket),
-                  _buildStatCard('Open (Baru)', stats['open'], [
-                    Colors.red[500]!,
-                    Colors.red[700]!,
-                  ], LucideIcons.alertCircle),
-                  _buildStatCard('In Progress', stats['in_progress'], [
-                    Colors.orange[400]!,
-                    Colors.orange[600]!,
-                  ], LucideIcons.clock),
-                  _buildStatCard('Selesai', stats['closed'], [
-                    Colors.teal[500]!,
-                    Colors.teal[700]!,
-                  ], LucideIcons.checkCircle),
+                  GestureDetector(
+                    onTap: () => widget.onNavigateToTickets?.call('All'),
+                    child: _buildStatCard('Total Tiket', stats['total'], [
+                      Colors.blue[600]!,
+                      Colors.blue[800]!,
+                    ], LucideIcons.ticket),
+                  ),
+                  GestureDetector(
+                    onTap: () => widget.onNavigateToTickets?.call('Open'),
+                    child: _buildStatCard('Open (Baru)', stats['open'], [
+                      Colors.red[500]!,
+                      Colors.red[700]!,
+                    ], LucideIcons.alertCircle),
+                  ),
+                  GestureDetector(
+                    onTap: () => widget.onNavigateToTickets?.call('In Progress'),
+                    child: _buildStatCard('In Progress', stats['in_progress'], [
+                      Colors.orange[400]!,
+                      Colors.orange[600]!,
+                    ], LucideIcons.clock),
+                  ),
+                  GestureDetector(
+                    onTap: () => widget.onNavigateToTickets?.call('Closed'),
+                    child: _buildStatCard('Selesai', stats['closed'], [
+                      Colors.teal[500]!,
+                      Colors.teal[700]!,
+                    ], LucideIcons.checkCircle),
+                  ),
                 ],
               ),
               SizedBox(height: 24),

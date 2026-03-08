@@ -16,14 +16,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   String userRole = '';
-
-  // 1. TAMBAHIN SITELISTSCREEN DI SINI (Index ke-2)
-  final List<Widget> _pages = [
-    DashboardScreen(), // Index 0
-    TicketListScreen(), // Index 1
-    SiteMenuScreen(), // Index 2 <--- TAB BARU
-    ProfileScreen(), // Index 3 (Profil geser ke kanan)
-  ];
+  String _ticketFilter = 'All';
 
   @override
   void initState() {
@@ -38,10 +31,33 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _navigateToTickets(String filter) {
+    setState(() {
+      _ticketFilter = filter;
+      _currentIndex = 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Build pages di dalam build() agar bisa rebuild dengan filter baru
+    final List<Widget> pages = [
+      DashboardScreen(
+        onNavigateToTickets: _navigateToTickets,
+      ), // Index 0
+      TicketListScreen(
+        key: ValueKey('ticket_$_ticketFilter'),
+        initialFilter: _ticketFilter,
+      ), // Index 1
+      SiteMenuScreen(), // Index 2 <--- TAB BARU
+      ProfileScreen(), // Index 3 (Profil geser ke kanan)
+    ];
+
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pages,
+      ),
 
       // Tombol tambah tiket tetep jalan khusus di tab Tiket (index 1)
       floatingActionButton:
@@ -67,6 +83,10 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
+            // Reset filter ke All kalau user tap tab Tiket manual
+            if (index == 1) {
+              _ticketFilter = 'All';
+            }
             _loadUserRole();
           });
         },

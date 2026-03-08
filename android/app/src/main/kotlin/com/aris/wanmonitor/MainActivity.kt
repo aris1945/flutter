@@ -1,4 +1,4 @@
-package com.example.wan_monitor
+package com.aris.wanmonitor
 
 import io.flutter.embedding.android.FlutterActivity
 

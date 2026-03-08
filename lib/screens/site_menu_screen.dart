@@ -121,7 +121,7 @@ class SiteMenuScreen extends StatelessWidget {
                 ), // Icon untuk ODC/Lokasi
               ),
               title: Text(
-                "Cek ODC Terdekat",
+                "Cari ODC",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               subtitle: Text("Pencarian lokasi ODC di sekitar Anda"),

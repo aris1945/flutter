@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   // Sesuaikan dengan IP Laravel kamu
   static const String hostUrl =
-      'http://192.168.100.126:8000';
+      'http://35.209.249.82';
   static const String baseUrl = '$hostUrl/api';
 
   // Fungsi Helper untuk GET Request

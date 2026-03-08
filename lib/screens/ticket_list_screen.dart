@@ -7,12 +7,16 @@ import 'ticket_detail_screen.dart';
 import 'create_ticket_screen.dart';
 
 class TicketListScreen extends StatefulWidget {
+  final String initialFilter;
+  const TicketListScreen({Key? key, this.initialFilter = 'All'}) : super(key: key);
+
   @override
   _TicketListScreenState createState() => _TicketListScreenState();
 }
 
 class _TicketListScreenState extends State<TicketListScreen> {
-  List<dynamic> tickets = [];
+  List<dynamic> allTickets = [];
+  List<dynamic> filteredTickets = [];
   bool isLoading = true;
   String userRole = '';
   String selectedFilter = 'All'; 
@@ -21,15 +25,26 @@ class _TicketListScreenState extends State<TicketListScreen> {
   @override
   void initState() {
     super.initState();
+    selectedFilter = widget.initialFilter;
     _loadUserRole();
     _fetchTickets();
+  }
+
+  @override
+  void didUpdateWidget(covariant TicketListScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialFilter != widget.initialFilter) {
+      setState(() {
+        selectedFilter = widget.initialFilter;
+      });
+      _fetchTickets();
+    }
   }
 
   Future<void> _loadUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     String? storedRole = prefs.getString('role');
     setState(() {
-      // Kita bersihkan string role-nya biar gak salah deteksi
       userRole = (storedRole ?? 'teknisi').toLowerCase().trim();
     });
   }
@@ -37,16 +52,15 @@ class _TicketListScreenState extends State<TicketListScreen> {
   Future<void> _fetchTickets({String query = ''}) async {
     setState(() => isLoading = true);
     try {
+      // Selalu ambil semua tiket dari API
       String url = '/tickets?search=$query';
-      if (selectedFilter != 'All') {
-        url += '&status=$selectedFilter';
-      }
 
       final response = await ApiService.get(url);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
-          tickets = data['data']['data'] ?? [];
+          allTickets = data['data']['data'] ?? [];
+          _applyFilter();
           isLoading = false;
         });
       } else {
@@ -55,6 +69,18 @@ class _TicketListScreenState extends State<TicketListScreen> {
     } catch (e) {
       print("Error fetch tickets: $e");
       setState(() => isLoading = false);
+    }
+  }
+
+  void _applyFilter() {
+    if (selectedFilter == 'All') {
+      filteredTickets = List.from(allTickets);
+    } else {
+      filteredTickets = allTickets.where((ticket) {
+        final status = (ticket['status'] ?? '').toString().toLowerCase();
+        final filter = selectedFilter.toLowerCase();
+        return status == filter;
+      }).toList();
     }
   }
 
@@ -69,12 +95,11 @@ class _TicketListScreenState extends State<TicketListScreen> {
 
   @override
 Widget build(BuildContext context) {
-  // HAPUS SCAFFOLD DI SINI, ganti pakai Container atau Column langsung
   return Column(
     children: [
       // Bagian AppBar Manual (Biar Navbar gak ketutup)
       Container(
-        padding: EdgeInsets.fromLTRB(16, 60, 16, 8), // Padding atas agak lebar buat gantiin AppBar
+        padding: EdgeInsets.fromLTRB(16, 60, 16, 8),
         color: Colors.white,
         child: Row(
           children: [
@@ -123,7 +148,7 @@ Widget build(BuildContext context) {
                 onSelected: (bool selected) {
                   setState(() {
                     selectedFilter = status;
-                    _fetchTickets(query: _searchController.text);
+                    _applyFilter();
                   });
                 },
                 selectedColor: Colors.blue[700],
@@ -144,13 +169,18 @@ Widget build(BuildContext context) {
           onRefresh: () => _fetchTickets(query: _searchController.text),
           child: isLoading
               ? Center(child: CircularProgressIndicator())
-              : tickets.isEmpty
-                  ? Center(child: Text("Belum ada tiket", style: TextStyle(color: Colors.grey)))
+              : filteredTickets.isEmpty
+                  ? ListView(
+                      children: [
+                        SizedBox(height: 100),
+                        Center(child: Text("Belum ada tiket", style: TextStyle(color: Colors.grey))),
+                      ],
+                    )
                   : ListView.builder(
                       padding: EdgeInsets.all(16),
-                      itemCount: tickets.length,
+                      itemCount: filteredTickets.length,
                       itemBuilder: (context, index) {
-                        final ticket = tickets[index];
+                        final ticket = filteredTickets[index];
                         return _buildTicketCard(ticket);
                       },
                     ),
