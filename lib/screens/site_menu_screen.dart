@@ -1,212 +1,171 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'site_list_screen.dart'; // Ini halaman Node-B lu yang sekarang
-import 'spbu_list_screen.dart'; // Ini halaman SPBU lu yang sekarang
-import 'odc_search_screen.dart'; // Ini halaman pencarian ODC yang baru
-import 'odp_nearest_screen.dart'; // Ini halaman pencarian ODP terdekat
-import 'absensi_screen.dart'; // Ini halaman cek absensi
+import 'site_list_screen.dart';
+import 'spbu_list_screen.dart';
+import 'odc_search_screen.dart';
+import 'odp_nearest_screen.dart';
+import 'absensi_screen.dart';
+import 'schedule_screen.dart';
 
 class SiteMenuScreen extends StatelessWidget {
+  const SiteMenuScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Daftar Menu',
           style: TextStyle(
             color: Colors.black87,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.white,
-        elevation: 1,
+        elevation: 0,
+        centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16),
+      body: GridView.count(
+        padding: const EdgeInsets.all(16),
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.0,
         children: [
-          // 1. MENU DATA NODE-B (CNOP)
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey[200]!),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  LucideIcons.radioTower,
-                  color: Colors.blue[700],
-                ), // Icon tower sinyal
-              ),
-              title: Text(
-                "Data Node-B",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text("Manajemen lokasi site CNOP & Telkomsel"),
-              trailing: Icon(LucideIcons.chevronRight, color: Colors.grey),
-              onTap: () {
-                // Arahin ke halaman list yang udah lu bikin sebelumnya
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SiteListScreen()),
-                );
-              },
+          // 1. DATA NODE-B
+          _buildMenuCard(
+            context,
+            title: "Data Node-B",
+            icon: LucideIcons.radioTower,
+            color: Colors.blue,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SiteListScreen()),
             ),
           ),
 
-          SizedBox(height: 12), // Jarak antar menu
-          // 2. MENU DATA SPBU
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey[200]!),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.red[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  LucideIcons.fuel,
-                  color: Colors.red[700],
-                ), // Icon pom bensin
-              ),
-              title: Text(
-                "Data SPBU",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text("Manajemen lokasi SPBU Pertamina"),
-              trailing: Icon(LucideIcons.chevronRight, color: Colors.grey),
-              onTap: () {
-                // Arahin ke halaman list yang udah lu bikin sebelumnya
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SpbuListScreen()),
-                );
-              },
+          // 2. DATA SPBU
+          _buildMenuCard(
+            context,
+            title: "Data SPBU",
+            icon: LucideIcons.fuel,
+            color: Colors.red,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SpbuListScreen()),
             ),
           ),
 
-          SizedBox(height: 12), // Jarak antar menu
-          // 3. MENU CEK ODC TERDEKAT
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey[200]!),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  LucideIcons.mapPin,
-                  color: Colors.green[700],
-                ), // Icon untuk ODC/Lokasi
-              ),
-              title: Text(
-                "Cari ODC",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text("Pencarian lokasi ODC di sekitar Anda"),
-              trailing: Icon(LucideIcons.chevronRight, color: Colors.grey),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => OdcSearchScreen()),
-                );
-              },
+          // 3. CARI ODC
+          _buildMenuCard(
+            context,
+            title: "Cari ODC",
+            icon: LucideIcons.mapPin,
+            color: Colors.green,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => OdcSearchScreen()),
             ),
           ),
 
-          SizedBox(height: 12), // Jarak antar menu
-          // 4. MENU CARI ODP TERDEKAT
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey[200]!),
-            ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.orange[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  LucideIcons.navigation,
-                  color: Colors.orange[700],
-                ), // Icon untuk ODP/Navigasi
-              ),
-              title: Text(
-                "Cari ODP Terdekat",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text("Cari ODP dalam radius 250m dari lokasi Anda"),
-              trailing: Icon(LucideIcons.chevronRight, color: Colors.grey),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => OdpNearestScreen()),
-                );
-              },
+          // 4. CARI ODP
+          _buildMenuCard(
+            context,
+            title: "Cari ODP",
+            icon: LucideIcons.navigation,
+            color: Colors.orange,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => OdpNearestScreen()),
             ),
           ),
 
-          SizedBox(height: 12), // Jarak antar menu
-          // 5. MENU CEK ABSENSI
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey[200]!),
+          // 5. CEK ABSENSI
+          _buildMenuCard(
+            context,
+            title: "Cek Absensi",
+            icon: LucideIcons.calendar,
+            color: Colors.purple,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => AbsensiScreen()),
             ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(16),
-              leading: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.purple[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  LucideIcons.calendar,
-                  color: Colors.purple[700],
-                ), // Icon kalender untuk absensi
-              ),
-              title: Text(
-                "Cek Absensi",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text("Laporan absensi berdasarkan NIK karyawan"),
-              trailing: Icon(LucideIcons.chevronRight, color: Colors.grey),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AbsensiScreen()),
-                );
-              },
+          ),
+
+          // 6. JADWAL PIKET SA
+          _buildMenuCard(
+            context,
+            title: "Jadwal Piket",
+            icon: LucideIcons.calendarClock,
+            color: Colors.teal,
+            // HAPUS CONST DI SINI
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ScheduleScreen()),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // JURUS HELPER BIAR KODINGAN RAPI & NGGAK BIKIN SAKIT MATA
+  Widget _buildMenuCard(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required MaterialColor color,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: color.shade100.withOpacity(0.5),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: color.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color.shade700, size: 32),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

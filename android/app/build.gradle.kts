@@ -22,6 +22,9 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    // NAH INI KODINGAN YANG UDAH GUE BENERIN GAYA KOTLIN
+    setProperty("archivesBaseName", "WanMonitor-${flutter.versionName}")
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.aris.wanmonitor"
