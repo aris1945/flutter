@@ -6,6 +6,7 @@ import 'odc_search_screen.dart';
 import 'odp_nearest_screen.dart';
 import 'absensi_screen.dart';
 import 'schedule_screen.dart';
+import 'ibooster_screen.dart';
 
 class SiteMenuScreen extends StatelessWidget {
   const SiteMenuScreen({super.key});
@@ -109,6 +110,17 @@ class SiteMenuScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => ScheduleScreen()),
+            ),
+          ),
+
+          _buildMenuCard(
+            context,
+            title: "Cek i-Booster",
+            icon: LucideIcons.activity,
+            color: Colors.indigo,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const IboosterScreen()),
             ),
           ),
         ],
