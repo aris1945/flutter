@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -26,24 +28,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  // --- MESIN LOGOUT ---
   void _logout() async {
-    // 1. Bersihin semua memori (token, nama, role)
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    
-    // Pengecekan wajib biar linter nggak ngomel
-    if (!mounted) return; 
 
-    // 2. Kasih notif sukses
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Berhasil Logout!')),
+      const SnackBar(
+        content: Text('Berhasil Logout!'),
+        backgroundColor: Colors.green,
+      ),
     );
 
-    // 3. Lempar ke Login & HANCURKAN riwayat halaman
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false, // Kunci maut: Bikin user nggak bisa pencet tombol "Back" di HP buat masuk lagi
+      (route) => false,
+    );
+  }
+
+  // --- POPUP KONFIRMASI LOGOUT ---
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(LucideIcons.logOut, color: Colors.red[700], size: 24),
+              const SizedBox(width: 10),
+              const Text(
+                'Konfirmasi Logout',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Yakin mau keluar dari akun ini Bos?',
+            style: TextStyle(fontSize: 15),
+          ),
+          actionsPadding: const EdgeInsets.only(right: 16, bottom: 16),
+          actions: [
+            // Tombol Batal
+            TextButton(
+              onPressed: () => Navigator.pop(context), // Cuma nutup popup
+              child: Text(
+                'Batal',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            // Tombol Ya, Keluar
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Tutup popup dulu
+                _logout(); // Baru jalanin mesin logout-nya
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[700],
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Ya, Keluar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -52,60 +115,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Profil', style: TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Profil',
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 1,
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        // Scaffold nolak body langsung di dalemnya, makanya pake ListView
+        padding: const EdgeInsets.all(16),
         children: [
           // HEADER PROFIL
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.blue[700],
               borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blue.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.white,
-                  child: Icon(LucideIcons.user, size: 30, color: Colors.blue[700]),
+                  child: Icon(
+                    LucideIcons.user,
+                    size: 30,
+                    color: Colors.blue[700],
+                  ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        userName, 
-                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)
+                        userName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          userRole.toUpperCase(), 
-                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)
+                          userRole.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
-          
-          SizedBox(height: 32),
 
-          // MENU LOGOUT DOANG
-          Text("AKUN", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey[500])),
-          SizedBox(height: 8),
+          const SizedBox(height: 32),
+
+          // MENU LOGOUT
+          Text(
+            "AKUN",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[500],
+            ),
+          ),
+          const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -114,12 +214,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: ListTile(
               leading: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(color: Colors.red[50], borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Icon(LucideIcons.logOut, color: Colors.red[700]),
               ),
-              title: Text("Logout", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[700])),
-              onTap: _logout,
+              title: Text(
+                "Logout",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red[700],
+                ),
+              ),
+              // NAH, SEKARANG ONTAP-NYA MANGGIL POPUP DULU
+              onTap: () => _showLogoutConfirmation(context),
             ),
           ),
         ],

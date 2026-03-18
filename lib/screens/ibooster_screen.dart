@@ -246,12 +246,13 @@ class _IboosterScreenState extends State<IboosterScreen> {
                     ),
                     const Divider(height: 1),
                     // LIST DATA METERAN
+                    // LIST DATA METERAN (DESAIN ATAS-BAWAH BIAR ANTI GENCET!)
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _resultData.length,
                       separatorBuilder: (context, index) =>
-                          Divider(height: 1, color: Colors.grey.shade100),
+                          Divider(height: 1, color: Colors.grey.shade200),
                       itemBuilder: (context, index) {
                         final item = _resultData[index];
                         final indexName = item['index']?.toString() ?? '-';
@@ -265,32 +266,29 @@ class _IboosterScreenState extends State<IboosterScreen> {
                             horizontal: 16,
                             vertical: 12,
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start, // Rata kiri semua
                             children: [
-                              // KIRI: Label dikunci lebarnya 130 pixel biar aman dari gencetan!
-                              SizedBox(
-                                width: 130,
-                                child: Text(
-                                  indexName.toUpperCase(),
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              // LABEL DI ATAS (Warna abu-abu biar elegan)
+                              Text(
+                                indexName.toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(width: 12), // Jarak napas tengah
-                              // KANAN: Value ngambil sisa layar (otomatis patah ke bawah kalau kepanjangan)
-                              Expanded(
-                                child: Text(
-                                  value,
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    fontFamily: 'monospace',
-                                  ),
+                              const SizedBox(height: 6), // Jarak napas tipis
+                              // VALUE DI BAWAHNYA (Warna item, font tebal ala terminal)
+                              Text(
+                                value,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                  fontFamily: 'monospace',
                                 ),
                               ),
                             ],
