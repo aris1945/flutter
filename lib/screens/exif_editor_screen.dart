@@ -156,9 +156,9 @@ class _ExifEditorScreenState extends State<ExifEditorScreen> {
         double lon = double.parse(_lonController.text);
         
         await _exif!.writeAttributes({
-          'GPSLatitude': _convertDecimalToGPS(lat.abs()),
+          'GPSLatitude': lat.abs().toString(),
           'GPSLatitudeRef': lat >= 0 ? 'N' : 'S',
-          'GPSLongitude': _convertDecimalToGPS(lon.abs()),
+          'GPSLongitude': lon.abs().toString(),
           'GPSLongitudeRef': lon >= 0 ? 'E' : 'W',
         });
       }
@@ -195,15 +195,6 @@ class _ExifEditorScreenState extends State<ExifEditorScreen> {
     } finally {
       setState(() => _isLoading = false);
     }
-  }
-
-  String _convertDecimalToGPS(double decimal) {
-    int degrees = decimal.floor();
-    double minutesFloat = (decimal - degrees) * 60;
-    int minutes = minutesFloat.floor();
-    double seconds = (minutesFloat - minutes) * 60;
-    int secInt = (seconds * 1000).round();
-    return "$degrees/1,$minutes/1,$secInt/1000";
   }
 
   @override
