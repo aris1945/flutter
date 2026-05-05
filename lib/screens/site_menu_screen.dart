@@ -7,6 +7,7 @@ import 'odp_nearest_screen.dart';
 import 'absensi_screen.dart';
 import 'schedule_screen.dart';
 import 'ibooster_screen.dart';
+import 'exif_editor_screen.dart';
 
 class SiteMenuScreen extends StatelessWidget {
   const SiteMenuScreen({super.key});
@@ -121,6 +122,18 @@ class SiteMenuScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const IboosterScreen()),
+            ),
+          ),
+          
+          // 8. EDIT EXIF FOTO
+          _buildMenuCard(
+            context,
+            title: "Edit Exif Foto",
+            icon: LucideIcons.imagePlus,
+            color: Colors.pink,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ExifEditorScreen()),
             ),
           ),
         ],
