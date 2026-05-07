@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart'; // Import ini
 import 'firebase_options.dart'; // File ini otomatis dibikin sama flutterfire tadi
+import 'package:intl/date_symbol_data_local.dart';
 
 // Pastikan import ini bener sesuai struktur folder lu
 import 'screens/login_screen.dart';
@@ -11,6 +12,8 @@ import 'screens/main_screen.dart';
 void main() async {
   // PENTING: Wajib ada ini sebelum jalanin Firebase
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await initializeDateFormatting('id_ID', null);
   
   // Nyalain mesin Firebase
   await Firebase.initializeApp(
